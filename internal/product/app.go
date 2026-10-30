@@ -3,6 +3,8 @@ package product
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/nilesh/product-service/internal/product/rpc"
+	"log"
 )
 
 func NewApp(cfg Config) (*fiber.App, error) {
@@ -13,6 +15,11 @@ func NewApp(cfg Config) (*fiber.App, error) {
 	app := fiber.New(fiber.Config{AppName: "ShopCore Product Service", BodyLimit: 1 << 20})
 	app.Use(recover.New())
 	h := &Handler{DB: db}
+	go func() {
+		if err := rpc.Listen(":"+cfg.GRPCPort, db); err != nil {
+			log.Printf("product gRPC server stopped: %v", err)
+		}
+	}()
 	categories := &CategoryHandler{DB: db}
 	app.Get("/api/v1/categories", categories.List)
 	app.Get("/health", func(c *fiber.Ctx) error { return c.JSON(fiber.Map{"status": "ok", "service": "product"}) })
