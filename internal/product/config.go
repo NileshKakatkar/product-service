@@ -2,7 +2,7 @@ package product
 
 import "os"
 
-type Config struct{ Port, DatabaseURL, PublicKeyPath, InternalServiceKey string }
+type Config struct{ Port, GRPCPort, DatabaseURL, PublicKeyPath, InternalServiceKey string }
 
 func LoadConfig() Config {
 	get := func(k, d string) string {
@@ -11,5 +11,5 @@ func LoadConfig() Config {
 		}
 		return d
 	}
-	return Config{Port: get("PRODUCT_SERVICE_PORT", "8082"), DatabaseURL: "postgres://" + get("POSTGRES_USER", "shopcore") + ":" + get("POSTGRES_PASSWORD", "shopcore") + "@" + get("POSTGRES_HOST", "localhost") + ":" + get("POSTGRES_PORT", "5432") + "/shopcore_products?sslmode=" + get("POSTGRES_SSLMODE", "disable"), PublicKeyPath: get("JWT_PUBLIC_KEY_PATH", "./secrets/public.pem"), InternalServiceKey: get("INTERNAL_SERVICE_KEY", "")}
+	return Config{Port: get("PRODUCT_SERVICE_PORT", "8082"), GRPCPort: get("PRODUCT_GRPC_PORT", "50052"), DatabaseURL: "postgres://" + get("POSTGRES_USER", "shopcore") + ":" + get("POSTGRES_PASSWORD", "shopcore") + "@" + get("POSTGRES_HOST", "localhost") + ":" + get("POSTGRES_PORT", "5432") + "/shopcore_products?sslmode=" + get("POSTGRES_SSLMODE", "disable"), PublicKeyPath: get("JWT_PUBLIC_KEY_PATH", "./secrets/public.pem"), InternalServiceKey: get("INTERNAL_SERVICE_KEY", "")}
 }
